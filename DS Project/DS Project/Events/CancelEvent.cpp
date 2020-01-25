@@ -14,11 +14,13 @@ void CancelEvent::Execute(Restaurant* pRest) // override execute function
 {	// cancels normal order from waiting list or in-service list
 
 	int toCancelOrderID = orderID;
-	Order* cancelledOrder = new Order();
-	Order* toCancelOrder = new Order(toCancelOrderID); // a new order with the same ID as the order to be cancelled from the waiting or in-service normal lists
-	if (!(pRest->removeWaitingNOrder(toCancelOrder, cancelledOrder))) { // checks if the required order is not in the normal waiting order list
-		pRest->removeInserviceNOrder(toCancelOrder); // checks if the required order is in the normal in-service order list
+	Order* cancelledOrder;
+	if (!(pRest->removeWaitingNOrder(toCancelOrderID, cancelledOrder))) { // checks if the required order is not in the normal waiting order list
+		pRest->removeInserviceNOrder(toCancelOrderID); // checks if the required order is in the normal in-service order list
+		cout<<"cancel done"<<endl;
+		return;
 	}
-	delete cancelledOrder;
-	delete toCancelOrder;
+	else
+		cout << "cancel done" << endl;
+		return;
 }

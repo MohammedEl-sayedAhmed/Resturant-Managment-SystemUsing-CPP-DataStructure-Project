@@ -4,6 +4,7 @@
 
 PromoteEvent::PromoteEvent() // default constructor
 {
+	orderExtraMoney = 0;
 }
 
 PromoteEvent::PromoteEvent(int tStep, int oID, double oExtraMoney):Event(tStep, oID) // non-default constructor initializing the promote event with its relevant arguments
@@ -14,17 +15,15 @@ PromoteEvent::PromoteEvent(int tStep, int oID, double oExtraMoney):Event(tStep, 
 void PromoteEvent::Execute(Restaurant* pRest)
 {
 	int toPromoteOrderID = orderID;
-	Order* tempOrder = new Order(toPromoteOrderID);
-	Order* toPromoteOrder = new Order(toPromoteOrderID);
+	Order* toPromoteOrder;
 
-	if ((pRest->removeWaitingNOrder(tempOrder, toPromoteOrder))) {
-
+	if ((pRest->removeWaitingNOrder(toPromoteOrderID, toPromoteOrder))) {
 		toPromoteOrder->setTotalMoney(toPromoteOrder->getTotalMoney() + orderExtraMoney);
 		toPromoteOrder->setType(TYPE_VIP);
-
-		pRest->addWaitingVIPOrder(toPromoteOrder, calculateVIPPriority(toPromoteOrder)); // add it to the waiting VIP order list with its calculated priority
+		pRest->addWaitingVIPOrder(toPromoteOrder); // add it to the waiting VIP order list with its calculated priority
+		cout << "promote done" << endl;
+		return;
 	}
-
-	delete tempOrder; // delete the temporarily created order
-	return;
+	else
+	    return;
 }

@@ -2,6 +2,8 @@
 
 #include "..\Defs.h"
 #include "Cook.h"
+#include <fstream>
+using namespace std;
 
 class Order
 {
@@ -13,6 +15,8 @@ protected:
 	double totalMoney; // total order  money
 	int arrTime; // arrival time for that order
 	int waitTime; // waiting time for that order
+	int finishTime;
+	int servTime;
     Cook *itsCook; // pointer to the cook to which the order is assigned
 
 public:
@@ -27,9 +31,18 @@ public:
 	//Getters and Setters
 	int getID() const; // get order ID
 	double getTotalMoney() const; // get order total money
-	void setTotalMoney(double totMoney); // get order total money
 	int getArrTime() const; // get order arrival time 
+	void setWaitTime(int t);
+	void setFinishTime(int time);
+	int getFinishTime()const;
 	int getDishes() const; // get order size 
 	ORD_TYPE getType() const; // get order type
+	void setTotalMoney(int Money);
 	void setType(ORD_TYPE otype);
+	void setCook(Cook* c);
+	Cook* getCook();
+	void setServTime(int time);
+	int getWaitTime()const;
+	int getServTime()const;
+	void outputInfoLine(ofstream& outputFile) const;
 };

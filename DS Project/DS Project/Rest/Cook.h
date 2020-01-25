@@ -22,4 +22,8 @@ public:
 	//Getters and Setters 
 	int getID() const; // get cook ID
 	ORD_TYPE getType() const; // get cook type (normal, vegan or VIP)
+	int getSpeed() const;
+	int getNumOrders() const;
+	void incNumOrders();
+	int getbreakDur() const;
 };

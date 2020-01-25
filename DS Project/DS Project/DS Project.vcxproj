@@ -152,11 +152,14 @@
     <ClInclude Include="Events\CancelEvent.h" />
     <ClInclude Include="Events\PromoteEvent.h" />
     <ClInclude Include="Generic_DS\LinkedList.h" />
+    <ClInclude Include="Generic_DS\LinkedPQueuePair.h" />
     <ClInclude Include="Generic_DS\LinkedQueue.h" />
     <ClInclude Include="Generic_DS\Node.h" />
+    <ClInclude Include="Generic_DS\PairNode.h" />
     <ClInclude Include="Generic_DS\PQNode.h" />
     <ClInclude Include="Generic_DS\LinkedPQueue.h" />
     <ClInclude Include="Generic_DS\PQueueADT.h" />
+    <ClInclude Include="Generic_DS\PQueuePairADT.h" />
     <ClInclude Include="Generic_DS\Queue.h" />
     <ClInclude Include="Generic_DS\QueueADT.h" />
     <ClInclude Include="GUI\GUI.h" />
@@ -173,9 +176,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="try.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,6 +2,7 @@
 #include <time.h>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 using namespace std;
 
 #include "Restaurant.h"
@@ -25,106 +26,23 @@ Restaurant::Restaurant() // the constructor for the restaurant class
 	NWOrders = 0;
 	GWOrders = 0;
 	VWOrders = 0;
+	NumDoneOrders = 0;
 
+	string outputFileName;
+	cout << "Please enter the desired name for the output file: ";
+	cin >> outputFileName;
 
-}
-/*
-void Restaurant::RunSimulation() // running the simulation according to the choosen mode
-{
-	pGUI = new GUI; // making a new object from GUI 
-	PROG_MODE mode = pGUI->getProgramMode(); // getting the program mode 
-	int timeStep = 1; // initialize timestep with 1 
+	outputFile.open(outputFileName + ".txt", ios::out); // opening the output file
 
-	// sayed edit
-	pGUI->initSimMode(); // initializing the simulation mode 
-	pGUI->updateInterface(); // updates the interface
-	readInputFile(); // reading the input file 
-
-	while (true) { // looping until all events are executed and all orders are finished		
-
-		ExecuteEvents(timeStep); // execute events of the current timestep
-		prepareOrders(); // in phase 1: prepare one order from each type
-
-		if (timeStep % 5 == 0) { // in phase 1: checking for multiples of 5 timesteps to move 1 order of each type to their relevant finished lists
-			finishOrders(); // in phase 1: finishes 1 order from each type every 5 timesteps // in phase 2: finishes the relevant orders
-		}
-
-		FillDrawingList(); // adds all the IDs for all orders and cooks to thier relevant quadrant in the GUI 
-
-		string toPrint = "Current Time: " + to_string(timeStep); // printing the current time step
-		toPrint = toPrint + "\nWaiting Normal Orders: " + to_string(NWOrders); // printing the number of current waiting orders
-		toPrint = toPrint + "\nWaiting Vegan Orders: " + to_string(GWOrders); // printing the number of current waiting vegan orders
-		toPrint = toPrint + "\nWaiting VIP Orders: " + to_string(VWOrders); // printing the number of current VIP waiting orders
-
-		toPrint = toPrint + "\nAvailable Normal Cooks: " + to_string(AvlNCooks); // printing the number of current available normal cooks
-		toPrint = toPrint + "\nAvailable Vegan Cooks: " + to_string(AvlGCooks); // printing the number of current available vegan cooks
-		toPrint = toPrint + "\nAvailable VIP Cooks: " + to_string(AvlVCooks); // printing the number of current VIP normal cooks
-
-		pGUI->printStringInStatusBar(toPrint); // print the relevant data of orders and cooks in the status bar
-
-		pGUI->updateInterface(); // updates the interface
-		pGUI->handleSimGUIEvents(); // handles the simulation GUI events
-	}
-
-	if ((mode - 1) != MODE_SLNT) {
-
-		if ((mode - 1) == MODE_INTR) {
-
-			pGUI->waitForClick(); // waits for the user click
-
-			timeStep++; // incrementing the current timestep by 1
-
-			if (EventsQueue.isEmpty()) { // checking if the events queue is empty 
-				if ((waitingNOrders.getCount() == 0) && (waitingGOrders.isEmpty()) && (waitingVIPOrders.isEmpty())) { // checking if all the waiting lists are empty 
-					if ((inServiceNOrders.getCount() == 0) && (inServiceGOrders.isEmpty()) && (inServiceVOrders.isEmpty())) { // checking if all the in-service lists are empty
-						//break; // exiting the simulation function -"RunSimulation"- when there are no more events nor active orders in the system
-					}
-				}
-			}
-		}
-		else if ((mode - 1) == MODE_STEP) {
-			pGUI->sleep(100);
-			timeStep++;
-		}
-		else if ((mode - 1) == MODE_DEMO) {
-			pGUI->initSimMode();
-		}
-	}
-	else {
-		timeStep++;
-	}
-	
-
-	/*switch (mode - 1)	// switch cases for choosing the mode
+	if (outputFile)
 	{
-
-	case MODE_INTR: // interactive mode case (case 1)
-		
-			pGUI->waitForClick(); // waits for the user click
-
-			timeStep++; // incrementing the current timestep by 1
-
-			if (EventsQueue.isEmpty()) { // checking if the events queue is empty 
-				if ((waitingNOrders.getCount() == 0) && (waitingGOrders.isEmpty()) && (waitingVIPOrders.isEmpty())) { // checking if all the waiting lists are empty 
-					if ((inServiceNOrders.getCount() == 0) && (inServiceGOrders.isEmpty()) && (inServiceVOrders.isEmpty())) { // checking if all the in-service lists are empty
-						break; // exiting the simulation function -"RunSimulation"- when there are no more events nor active orders in the system
-					}
-				}
-			}
-		
-		break;
-	case MODE_STEP:
-		break;
-	case MODE_SLNT:
-		break;
-	case MODE_DEMO:
-		pGUI->initSimMode();
-		break;
-
-	};
-} 
-*/
-
+		outputFile << "FT ID AT WT ST\n";
+	}
+	else // if the output file can't be opened
+	{
+		cout << "Could not generate an output file.\n"; // print error message on the screen
+	}
+}
 bool Restaurant::isEmptyRest() {
 	if (EventsQueue.isEmpty()) { // checking if the events queue is empty 
 		if ((waitingNOrders.getCount() == 0) && (waitingGOrders.isEmpty()) && (waitingVIPOrders.isEmpty())) { // checking if all the waiting lists are empty 
@@ -140,7 +58,7 @@ void Restaurant::RunSimulation() // running the simulation according to the choo
 {
 	pGUI = new GUI; // making a new object from GUI 
 	PROG_MODE mode = pGUI->getProgramMode(); // getting the program mode 
-	timeStep = 1; // initialize timestep with 1 
+	int timeStep = 1; // initialize timestep with 1 
 	readInputFile(); // reading the input file 
 
 	if ((mode - 1) == MODE_DEMO) {
@@ -149,16 +67,18 @@ void Restaurant::RunSimulation() // running the simulation according to the choo
 	else if ((mode - 1) == MODE_SLNT) {
 		while (true) { // looping until all events are executed and all orders are finished		
 
+			
 			ExecuteEvents(timeStep); // execute events of the current timestep
-			prepareOrders(); // in phase 1: prepare one order from each type
-
-			if (timeStep % 5 == 0) { // in phase 1: checking for multiples of 5 timesteps to move 1 order of each type to their relevant finished lists
-				finishOrders(); // in phase 1: finishes 1 order from each type every 5 timesteps // in phase 2: finishes the relevant orders
-			}
+			autoPromote(timeStep, AutoS); // Autopromotion
+			prepareOrders(timeStep); // in phase 1: prepare one order from each type
+			finishOrders(timeStep, BM);
+			checkBreakEnd(timeStep);
+			
 
 			timeStep++; // incrementing the current timestep by 1
 
 			if (isEmptyRest()) { // checking if all events are executed and all lists are empty
+				printOutFileFooter();
 				break;
 			}
 		}
@@ -170,11 +90,11 @@ void Restaurant::RunSimulation() // running the simulation according to the choo
 		while (true) { // looping until all events are executed and all orders are finished		
 
 			ExecuteEvents(timeStep); // execute events of the current timestep
-			prepareOrders(); // in phase 1: prepare one order from each type
-
-			if (timeStep % 5 == 0) { // in phase 1: checking for multiples of 5 timesteps to move 1 order of each type to their relevant finished lists
-				finishOrders(); // in phase 1: finishes 1 order from each type every 5 timesteps // in phase 2: finishes the relevant orders
-			}
+			autoPromote(timeStep, AutoS); // Autopromotion
+			prepareOrders(timeStep); // in phase 1: prepare one order from each type
+			finishOrders(timeStep, BM);
+			checkBreakEnd(timeStep);
+		
 
 			FillDrawingList(); // adds all the IDs for all orders and cooks to thier relevant quadrant in the GUI 
 			printRestInfo(timeStep);
@@ -192,11 +112,15 @@ void Restaurant::RunSimulation() // running the simulation according to the choo
 			timeStep++; // incrementing the current timestep by 1
 
 			if (isEmptyRest()) { // checking if all events are executed and all lists are empty
+				printOutFileFooter();
 				break;
 			}
 		}
 	}
+
+
 }
+
 
 void Restaurant::printRestInfo(int timeStep) {
 	string toPrint = "Current Time: " + to_string(timeStep); // add thecurrent time step to string
@@ -207,16 +131,34 @@ void Restaurant::printRestInfo(int timeStep) {
 	toPrint = toPrint + "\nAvailable Normal Cooks: " + to_string(AvlNCooks); // add the number of current available normal cooks to string
 	toPrint = toPrint + ", Available Vegan Cooks: " + to_string(AvlGCooks); // add the number of current available vegan cooks to string
 	toPrint = toPrint + ", Available VIP Cooks: " + to_string(AvlVCooks); // add the number of current VIP normal cooks to string
-	
+
 	toPrint = toPrint + "\nAssigned this Time Step: " + startSrvNow + ".";
+
+
 
 	pGUI->printStringInStatusBar(toPrint); // print the relevant data of orders and cooks in the status bar
 }
 
+void Restaurant::printOutFileFooter() {
+	outputFile << "...................................\n...................................\n";
+
+	int totOrders = NOrders + GOrders + VOrders;
+	outputFile << "Order: " << totOrders << " [Norm: " << NOrders << ", Veg: " << GOrders << ", VIP: " << VOrders << "]\n";
+
+	int totCooks = NumNCooks + NumGCooks + NumVCooks;
+
+	outputFile << "Cooks: " << totCooks << " [Norm: " << NumNCooks << ", Veg: " << NumGCooks << ", VIP: " << NumVCooks << "]\n";
+
+	outputFile << "Avg Wait = " << avgWait << ", Avg Serv = " << avgSrv << endl;
+
+	outputFile << "Auto-promoted: " << autoProm;
+}
+
+
 //////////////////////////////////  Event handling functions   /////////////////////////////
 
 void Restaurant::addToCookDrawables() { // adds available cooks to the cook quadrant 
-	
+
 	int loopCounter; // holds the size of the cook lists
 	Cook** p; // pointer to pointer (points to array) of type cook; used to print each cook ID in its cook quadrant with its corresponding color
 
@@ -266,32 +208,32 @@ void Restaurant::addToWaitDrawables() { // adds waiting orders to the waiting qu
 void Restaurant::addToSrvDrawables() { // adds in-service orders to the in-service quadrant 
 
 	int loopCounter; // holds size of in-service order list
-	Order** p; // pointer to pointer -(points to array)- of type order; used to print each order ID in in-service quadrant with its corresponding color
-
-	p = inServiceVOrders.toArray(loopCounter); // converting the in-service VIP orders list to an array
+	 // pointer to pointer -(points to array)- of type order; used to print each order ID in in-service quadrant with its corresponding color
+	Order** p;
+	p = inServiceVOrders.OrdertoArray(loopCounter); // converting the in-service VIP orders list to an array
 	for (int i = 0; i < loopCounter; i++) { // looping over the whole array
 		pGUI->addGUIDrawable(new VIPGUIElement(p[i]->getID(), GUI_REGION::SRV_REG)); // for each iteration, it prints each VIP order ID in in-service quadrant with its corresponding color
 	}
 	delete[] p; // delete the array
 
-	p = inServiceGOrders.toArray(loopCounter); // converting the in-service vegan orders list to an array
+	p = inServiceGOrders.OrdertoArray(loopCounter); // converting the in-service vegan orders list to an array
 	for (int i = 0; i < loopCounter; i++) { // looping over the whole array
 		pGUI->addGUIDrawable(new VeganGUIElement(p[i]->getID(), GUI_REGION::SRV_REG)); // for each iteration, it prints each vegan order ID in in-service quadrant with its corresponding color
 	}
 	delete[] p; // delete the array
 
-	p = inServiceNOrders.toArray(loopCounter); // converting the in-service normal orders list to an array 
-	for (int i = 0; i < loopCounter; i++) { // looping over the whole array
-		pGUI->addGUIDrawable(new NormalGUIElement(p[i]->getID(), GUI_REGION::SRV_REG)); // for each iteration, it prints each normal order ID in in-service quadrant with its corresponding color
-	}
-	delete[] p; // delete the array
+p = inServiceNOrders.toArray(loopCounter); // converting the in-service normal orders list to an array 
+for (int i = 0; i < loopCounter; i++) { // looping over the whole array
+	pGUI->addGUIDrawable(new NormalGUIElement(p[i]->getID(), GUI_REGION::SRV_REG)); // for each iteration, it prints each normal order ID in in-service quadrant with its corresponding color
+}
+delete[] p; // delete the array
 }
 
 void Restaurant::addToDoneDrawables() { // adds finished orders to the done quadrant 
 
 	int loopCounter; // holds size of in-service order list
 	Order** p; // pointer to pointer -(points to array)- of type order; used to print each order ID in done quadrant with its corresponding color
-
+	
 	p = finishedVOrders.toArray(loopCounter); // converting the finished VIP orders list to an array
 	for (int i = 0; i < loopCounter; i++) { // looping over the whole array
 		pGUI->addGUIDrawable(new VIPGUIElement(p[i]->getID(), GUI_REGION::DONE_REG)); // for each iteration, it prints each VIP order ID in done quadrant with its corresponding color
@@ -311,42 +253,287 @@ void Restaurant::addToDoneDrawables() { // adds finished orders to the done quad
 	delete[] p; // delete the array
 }
 
-void Restaurant::prepareOrders() { // in phase 1: prepares 1 order from each type // in phase 2: assigns relevant orders to available cooks
+void Restaurant::prepareOrders(int TimeStep) { // in phase 1: prepares 1 order from each type // in phase 2: assigns relevant orders to available cooks
 	///////////////                                 Re-write in phase 2                  ///////////////
 	Order* currOrder; // pointer to current order
+	Cook* currCook;
+	int FT;
+	int pr;
+	bool i;
+	startSrvNow = "";
+	while (waitingVIPOrders.peek(currOrder)) {
+		if (VCooks.peekFront(currCook)) {
+			FT = TimeStep + ceil((double)currOrder->getDishes() / (double)currCook->getSpeed());
+			currOrder->setWaitTime(TimeStep - currOrder->getArrTime());
+			currOrder->setServTime(ceil((double)currOrder->getDishes() / (double)currCook->getSpeed()));
+			currOrder->setFinishTime(FT);
+			waitingVIPOrders.dequeue(currOrder);
+			VCooks.dequeue(currCook);
+			inServiceVOrders.enqueue(currCook, currOrder, FT);
+			VWOrders--;
+			AvlVCooks--;
+			startSrvNow = startSrvNow + "\nV" + to_string(currCook->getID()) + "(V" + to_string(currOrder->getID()) + ")";
 
-	if (waitingVIPOrders.dequeue(currOrder)) { // checking whether there is VIP orders in the waiting VIP order list and if so, dequeuing it and makes currOrder pointer points to it 
-		inServiceVOrders.enqueue(currOrder); // enqueueing the current order to VIP in-service list 
-		VWOrders--; // decrementing the number of waiting VIP orders in the waiting VIP order list
+		}
+		else if (NCooks.peekFront(currCook)) {
+			FT = TimeStep + ceil((double)currOrder->getDishes() / (double)currCook->getSpeed());
+			currOrder->setWaitTime(TimeStep - currOrder->getArrTime());
+			currOrder->setServTime(ceil((double)currOrder->getDishes() / (double)currCook->getSpeed()));
+			currOrder->setFinishTime(FT);
+			waitingVIPOrders.dequeue(currOrder);
+			NCooks.dequeue(currCook);
+			inServiceVOrders.enqueue(currCook, currOrder, FT);
+			VWOrders--;
+			AvlNCooks--;
+			startSrvNow = startSrvNow + "\nN" + to_string(currCook->getID()) + "(V" + to_string(currOrder->getID()) + ")";
+		}
+		else if (GCooks.peekFront(currCook)) {
+			FT = TimeStep + ceil((double)currOrder->getDishes() / (double)currCook->getSpeed());
+			currOrder->setWaitTime(TimeStep - currOrder->getArrTime());
+			currOrder->setServTime(ceil((double)currOrder->getDishes() / (double)currCook->getSpeed()));
+			currOrder->setFinishTime(FT);
+			waitingVIPOrders.dequeue(currOrder);
+			GCooks.dequeue(currCook);
+			inServiceVOrders.enqueue(currCook, currOrder, FT);
+			VWOrders--;
+			AvlGCooks--;
+			startSrvNow = startSrvNow + "\nG" + to_string(currCook->getID()) + "(V" + to_string(currOrder->getID()) + ")";
+		}
+		else
+			break;
+
 	}
 
-	if (waitingGOrders.dequeue(currOrder)) { // checking whether there is vegan orders in the waiting vegan order list and if so, dequeuing it and makes currOrder pointer points to it 
-		inServiceGOrders.enqueue(currOrder); // enqueueing the current order to vegan in-service list 
-		GWOrders--; // decrementing the number of waiting vegan orders in the waiting vegan order list
-	}
+	while (waitingGOrders.peekFront(currOrder)) {
+		if (GCooks.peekFront(currCook)) {
+			FT = TimeStep + ceil((double)currOrder->getDishes() / (double) currCook->getSpeed());
+			currOrder->setWaitTime(TimeStep - currOrder->getArrTime());
+			currOrder->setServTime(ceil((double)currOrder->getDishes() / (double)currCook->getSpeed()));
+			currOrder->setFinishTime(FT);
 
-	if (waitingNOrders.DeleteFirst(currOrder)) { // checking whether there is normal orders in the waiting normal order list and if so, dequeuing it and makes currOrder pointer points to it 
-		inServiceNOrders.InsertEnd(currOrder); // enqueueing the current order to normal in-service list 
-		NWOrders--; // decrementing the number of waiting normal orders in the waiting normal order list
+			waitingGOrders.dequeue(currOrder);
+			GCooks.dequeue(currCook);
+			inServiceGOrders.enqueue(currCook, currOrder, FT);
+			GWOrders--;
+			AvlGCooks--;
+			startSrvNow = startSrvNow + "\nG" + to_string(currCook->getID()) + "(G" + to_string(currOrder->getID()) + ")";
+		}
+		else 
+			break;
+
+	}
+	while (waitingNOrders.ShowFirst(currOrder)) {
+		if (NCooks.peekFront(currCook)) {
+			waitingNOrders.DeleteFirst(currOrder);
+			inServiceNOrders.InsertEnd(currOrder);
+			NCooks.dequeue(currCook);
+			currOrder->setCook(currCook);
+			FT = TimeStep + ceil((double)currOrder->getDishes() / (double)currCook->getSpeed());
+			currOrder->setWaitTime(TimeStep - currOrder->getArrTime());
+			currOrder->setServTime(ceil((double)currOrder->getDishes() / (double)currCook->getSpeed()));
+			currOrder->setFinishTime(FT);
+			NWOrders--;
+			AvlNCooks--;
+			startSrvNow = startSrvNow + "\nN" + to_string(currCook->getID()) + "(N" + to_string(currOrder->getID()) + ")";
+		}
+		else if (VCooks.peekFront(currCook)) {
+			waitingNOrders.DeleteFirst(currOrder);
+			inServiceNOrders.InsertEnd(currOrder);
+			VCooks.dequeue(currCook);
+			currOrder->setCook(currCook);
+			FT = TimeStep + ceil((double)currOrder->getDishes() / (double)currCook->getSpeed());
+			currOrder->setWaitTime(TimeStep - currOrder->getArrTime());
+			currOrder->setServTime(ceil((double)currOrder->getDishes() / (double)currCook->getSpeed()));
+			currOrder->setFinishTime(FT);
+			NWOrders--;
+			AvlVCooks--;
+			startSrvNow = startSrvNow + "\nV" + to_string(currCook->getID()) + "(V" + to_string(currOrder->getID()) + ")";
+		}
+		else
+			break;
 	}
 	return;
 }
 
-void Restaurant::finishOrders() { // in phase 1: finishes 1 order from each type every 5 timesteps // in phase 2: finishes the relevant orders
+
+void Restaurant::checkBreak(Cook* currCook, int BM, int CurrentTimeStep) {
+	int pri;
+	ORD_TYPE type;
+	if (currCook->getNumOrders() < BM) {
+		type = currCook->getType();
+		switch (type)
+		{
+		case TYPE_NRM:
+			NCooks.enqueue(currCook);
+			AvlNCooks++;
+			break;
+		case TYPE_VEG:
+			GCooks.enqueue(currCook);
+			AvlGCooks++;
+			break;
+		case TYPE_VIP:
+			VCooks.enqueue(currCook);
+			AvlVCooks++;
+			break;
+		}
+	}
+	else {
+		pri = CurrentTimeStep + currCook->getbreakDur();
+		inBreakCooks.enqueue(currCook, pri);
+		type = currCook->getType();
+		switch (type)
+		{
+		case TYPE_NRM:
+			NCooks.dequeue(currCook);
+			break;
+		case TYPE_VEG:
+			GCooks.dequeue(currCook);
+			break;
+		case TYPE_VIP:
+			VCooks.dequeue(currCook);
+			break;
+		}
+	}
+}
+void Restaurant::checkBreakEnd(int CurrentTimeStep) {
+	Cook* currCook;
+	ORD_TYPE type;
+	int FT;
+	while (inBreakCooks.peek(currCook, FT)) {
+		if (FT == CurrentTimeStep) {
+			inBreakCooks.dequeue(currCook);
+			type = currCook->getType();
+			switch (type)
+			{
+			case TYPE_NRM:
+				NCooks.enqueue(currCook);
+				AvlNCooks++;
+				break;
+			case TYPE_VEG:
+				GCooks.enqueue(currCook);
+				AvlGCooks++;
+				break;
+			case TYPE_VIP:
+				VCooks.enqueue(currCook);
+				AvlVCooks++;
+				break;
+			}
+		}
+		else
+			break;
+	}
+}
+void Restaurant::updateAvgWait(Order* currOrder) {
+	avgWait = ((avgWait * (NumDoneOrders - 1)) + currOrder->getWaitTime()) / NumDoneOrders;
+}
+
+void Restaurant::updateAvgSrv(Order* currOrder) {
+	avgSrv = ((avgSrv * (NumDoneOrders - 1)) + currOrder->getServTime()) / NumDoneOrders;
+}
+
+void Restaurant::finishOrders(int CurrentTimeStep, int BM) { // in phase 1: finishes 1 order from each type every 5 timesteps // in phase 2: finishes the relevant orders
 	///////////////                                 Re-write in phase 2                  ///////////////
 	Order* currOrder; // pointer to current order
+	Cook* currCook;
+	LinkedPQueue<Order*> toPrint;
+	int prior;
+	Node<Order*>* p=inServiceNOrders.getHead();
+	Order* currNormal;
 
-	if (inServiceVOrders.dequeue(currOrder)) { // checking whether there is VIP orders in the in-service VIP order list and if so, dequeuing it and makes currOrder pointer points to it 
-		finishedVOrders.enqueue(currOrder); // enqueueing the current order to VIP finished orders list 
+	while (inServiceVOrders.peek(currCook, currOrder, prior)) {
+		if (prior == CurrentTimeStep) {
+			inServiceVOrders.dequeue(currCook, currOrder,prior);
+			finishedVOrders.enqueue(currOrder);
+			NumDoneOrders++;
+			updateAvgWait(currOrder);
+			updateAvgSrv(currOrder);
+			toPrint.enqueue(currOrder, currOrder->getServTime());
+			currCook->incNumOrders();
+			checkBreak(currCook, BM, CurrentTimeStep);
+		}
+		else
+			break;
+	}
+	while (inServiceGOrders.peek(currCook, currOrder, prior)) {
+		if (prior == CurrentTimeStep) {
+			inServiceGOrders.dequeue(currCook, currOrder, prior);
+			finishedGOrders.enqueue(currOrder);
+			NumDoneOrders++;
+			updateAvgWait(currOrder);
+			updateAvgSrv(currOrder);
+			toPrint.enqueue(currOrder, currOrder->getServTime());
+			currCook->incNumOrders();
+			checkBreak(currCook, BM, CurrentTimeStep);
+		}
+		else {
+			break;
+		}
+	}
+	while (p) {
+		currNormal = p->getItem();
+		int currNormalID = currNormal->getID();
+		if (currNormal->getFinishTime() == CurrentTimeStep) {
+			inServiceNOrders.DeleteNode(currNormalID, currNormal);
+			finishedNOrders.enqueue(currNormal);
+			NumDoneOrders++;
+			updateAvgWait(currNormal);
+			updateAvgSrv(currNormal);
+			toPrint.enqueue(currNormal, currNormal->getServTime());
+			currCook = currNormal->getCook();
+			currCook->incNumOrders();
+			checkBreak(currCook, BM, CurrentTimeStep);
+
+		}
+		p = p->getNext();
 	}
 
-	if (inServiceGOrders.dequeue(currOrder)) { // checking whether there is vegan orders in the in-service vegan order list and if so, dequeuing it and makes currOrder pointer points to it 
-		finishedGOrders.enqueue(currOrder); // enqueueing the current order to vegan finished orders list 
+	while (!toPrint.isEmpty()) {
+		toPrint.dequeue(currOrder);
+		currOrder->outputInfoLine(outputFile);
+	}
+}
+
+/*void Restaurant::genOutputFile() {
+	string outputFileName; // the output file name
+	cout << "Please enter the desired name of the output file: ";
+	cin >> outputFileName; // prompting the user to enter the required output file name
+
+	outputFileName = outputFileName + ".txt"; // adding .txt extension to the file name
+
+	fstream outputFile;
+	outputFile.open(outputFileName, ios::out); // opening the output file
+
+	if (outputFile)
+	{
+		outputFile.close(); // close the input file
 	}
 
-	if (inServiceNOrders.DeleteFirst(currOrder)) { // checking whether there is normal orders in the in-service normal order list and if so, dequeuing it and makes currOrder pointer points to it 
-		finishedNOrders.enqueue(currOrder); // enqueueing the current order to normal finished orders list 
+	else // if the output file can't be opened
+	{
+		cout << "Error in loading file.\n"; // print error message on the screen
 	}
+}*/
+void Restaurant::autoPromote(int TimeStep,int autoS){
+	Order* toPromoteOrder;
+	if (!waitingNOrders.ShowFirst(toPromoteOrder)) {
+		cout << "There is no waiting" << endl;
+		return;
+	}
+	while (waitingNOrders.ShowFirst(toPromoteOrder)) {
+		int WT = TimeStep - toPromoteOrder->getArrTime();
+		if (WT == autoS) {
+			int toPromoteOrderID = toPromoteOrder->getID();
+			if (removeWaitingNOrder(toPromoteOrderID, toPromoteOrder)) {
+				toPromoteOrder->setType(TYPE_VIP);
+				addWaitingVIPOrder(toPromoteOrder); // add it to the waiting VIP order list with its calculated priority
+				autoProm++;
+			}
+		}
+		else
+	
+			break;
+	}
+	return;
 }
 
 
@@ -360,6 +547,8 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep) { //executes aLL events that
 
 		pE->Execute(this); 
 		EventsQueue.dequeue(pE); // remove event from the queue
+		cout << "event done at" << pE->getEventTime() << endl;
+		cout << "event done for" << pE->getOrderID() << endl;
 		delete pE; // deallocate event object from memory
 	}
 }
@@ -367,6 +556,8 @@ void Restaurant::ExecuteEvents(int CurrentTimeStep) { //executes aLL events that
 
 Restaurant::~Restaurant() // destruct all the members from restaurant.h
 { 
+	outputFile.close();
+	cout << "Output file saved.\n";
 	while (!EventsQueue.isEmpty()) {
 		Event* pEQ;
 		EventsQueue.dequeue(pEQ);
@@ -422,14 +613,18 @@ Restaurant::~Restaurant() // destruct all the members from restaurant.h
 	}
 
 	while (!inServiceGOrders.isEmpty()) {
-		Order* pO;
-		inServiceGOrders.dequeue(pO);
+		Cook* pO;
+		Order* qO;
+		int priO;
+		inServiceGOrders.dequeue(pO,qO, priO);
 		delete pO;
 	}
 
 	while (!inServiceVOrders.isEmpty()) {
-		Order* pO;
-		inServiceVOrders.dequeue(pO);
+		Cook* pO;
+		Order* qO;
+		int priO;
+		inServiceVOrders.dequeue(pO,qO, priO);
 		delete pO;
 	}
 
@@ -478,7 +673,6 @@ ORD_TYPE Restaurant::charToOrderType(char charOrderType) { // maps character of 
 	}
 }
 
-
 void Restaurant::readInputFile() { // read input file and populate relevant lists
 	string inputFileName; // the input file name 
 	cout << "Please enter the name of the file (in the current directory) to be loaded: ";
@@ -498,6 +692,10 @@ void Restaurant::readInputFile() { // read input file and populate relevant list
 		char eventType; // event type (arrival of a new order, cancellation of an existing order or promotion of an order to be a VIP order)
 
 		inputFile >> SN >> SG >> SV >> AvlNCooks >> AvlGCooks >> AvlVCooks >> BM >> BN >> BG >> BV >> AutoS >> M; // reading the data from the input file and assigning it to its relevant variables
+
+		NumNCooks = AvlNCooks;
+		NumGCooks = AvlGCooks;
+		NumVCooks = AvlVCooks;
 
 		for (int i = 0; i < AvlNCooks; i++) { 
 			Cook *p = new Cook(i+1, TYPE_NRM, SN, BN); // create a new cook object with type normal and a given speed and break duaration in timesteps, its ID is set uniquely
@@ -559,28 +757,6 @@ void Restaurant::readInputFile() { // read input file and populate relevant list
 		cout << "Error in loading file.\n"; // print error message on the screen
 	}
 }
-
-/*void Restaurant::genOutputFile() {
-	string outputFileName; // the output file name 
-	cout << "Please enter the desired name of the output file: ";
-	cin >> outputFileName; // prompting the user to enter the required output file name 
-
-	outputFileName = outputFileName + ".txt"; // adding .txt extension to the file name 
-
-	fstream outputFile;
-	outputFile.open(outputFileName, ios::out); // opening the output file 
-
-	if (outputFile)
-	{
-		outputFile.close(); // close the input file
-	}
-
-	else // if the output file can't be opened 
-	{
-		cout << "Error in loading file.\n"; // print error message on the screen
-	}
-}*/
-
 void Restaurant::addWaitingNOrder(Order*& toBeAddedOrder) { // adder function for adding order to waiting normal order list
 	waitingNOrders.InsertEnd(toBeAddedOrder); // add it to the waiting normal order list
 	NWOrders++; // incrementing number of normal waiting orders in the waiting normal order list
@@ -595,7 +771,9 @@ void Restaurant::addWaitingGOrder(Order*& toBeAddedOrder) { // adder function fo
 	return;
 }
 
-void Restaurant::addWaitingVIPOrder(Order*& toBeAddedOrder, double priority) { // adder function for adding order to waiting normal order list
+
+void Restaurant::addWaitingVIPOrder(Order*& toBeAddedOrder) { // adder function for adding order to waiting normal order list
+	double priority = 0.5 * toBeAddedOrder->getArrTime() + 0.7 * toBeAddedOrder->getDishes() + 0.2 * toBeAddedOrder->getTotalMoney();
 	waitingVIPOrders.enqueue(toBeAddedOrder, priority); // add it to the waiting VIP order list with its calculated priority
 	VWOrders++; // incrementing number of VIP waiting orders in the waiting VIP order list
 	VOrders++; // incrementing number of VIP orders in the whole program
@@ -603,38 +781,43 @@ void Restaurant::addWaitingVIPOrder(Order*& toBeAddedOrder, double priority) { /
 }
 
 
-bool Restaurant::removeWaitingNOrder(Order*& toCancelOrder, Order*& cancelledOrder) {
-	bool deletedOrder =  waitingNOrders.DeleteNode(toCancelOrder, cancelledOrder);
+bool Restaurant::removeWaitingNOrder(int toCancelOrderID, Order*& cancelledOrder) {
+	bool deletedOrder = waitingNOrders.DeleteNode(toCancelOrderID, cancelledOrder);
 	if (deletedOrder) {
 		NWOrders--; // decrementing the number of normal orders in the normal waiting order list
 		NOrders--; // decrementing the number of normal orders in the whole program
+		cout << "removeNWorder" << endl;
 	}
 	return deletedOrder;
 }
 
-bool Restaurant::removeInserviceNOrder(Order*& toCancelOrder) {
+bool Restaurant::removeInserviceNOrder(int toCancelOrderID) {
 	Order* cancelledOrder = new Order();
-	bool deletedOrder = inServiceNOrders.DeleteNode(toCancelOrder, cancelledOrder);
+	Cook* cancelledCook;
+	//ORD_TYPE type;
+	bool deletedOrder = inServiceNOrders.DeleteNode(toCancelOrderID, cancelledOrder);
+	cancelledCook = cancelledOrder->getCook();
+	//type = cancelledCook->getType();
+	NCooks.enqueue(cancelledCook);
+	AvlNCooks++;
 	if (deletedOrder) {
 		NOrders--; // decrementing the number of normal orders in the whole program
+		/*switch (type)
+		{
+		case TYPE_NRM:
+			NCooks.enqueue(cancelledCook);
+			AvlNCooks++;
+			break;
+		case TYPE_VEG:
+			GCooks.enqueue(cancelledCook);
+			AvlGCooks++;
+			break;
+		case TYPE_VIP:
+			VCooks.enqueue(cancelledCook);
+			AvlVCooks++;
+			break;
+		}*/
 	}
 	delete cancelledOrder;
 	return deletedOrder;
 }
-
-/*void Restaurant::moveToAvailable(int currentTimestep, Cook* breakCook) {
-	Cook* toBeAvailable;
-	currentTimestep = timeStep;
-	if (inBreakCooks.peek(breakCook->getPriority()) == currentTimestep) {
-		inBreakCooks.dequeue(toBeAvailable);
-		if (toBeAvailable->getType() == 'N') {
-			NCooks.enqueue(toBeAvailable);
-		}
-		else if (toBeAvailable->getType() == 'G') {
-			GCooks.enqueue(toBeAvailable);
-		}
-		else if (toBeAvailable->getType() == 'V') {
-			VCooks.enqueue(toBeAvailable);
-		}
-	}
-}*/

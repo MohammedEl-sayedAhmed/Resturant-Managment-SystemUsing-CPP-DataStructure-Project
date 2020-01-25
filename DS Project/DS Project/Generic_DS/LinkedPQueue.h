@@ -3,6 +3,7 @@
 
 
 #include "PQNode.h"
+#include "PairNode.h"
 #include "PQueueADT.h"
 
 template <typename T>
@@ -96,7 +97,6 @@ public:
 		}
 	} // end enqueue
 
-
 	/*Function: dequeue
 	Removes the front of this LinkedPqueue. That is, removes the item that was added
 	earliest.
@@ -122,7 +122,6 @@ public:
 		count--;
 		return true;
 	}
-
 	T* toArray(int& numElements) {
 		//returns array of T (array if items) //////////////////NOT IN ADT????????????????
 		{
@@ -163,10 +162,20 @@ public:
 			return false;
 
 		frntEntry = frontPtr->getItem();
+		
 		return true;
 
 	}
+	bool peek(T& frntEntry, int& pri) const
+	{
+		if (isEmpty())
+			return false;
 
+		frntEntry = frontPtr->getItem();
+		pri = frontPtr->getPri();
+		return true;
+
+	}
 	~LinkedPQueue()
 	{
 		//Free all nodes in the LinkedPqueue

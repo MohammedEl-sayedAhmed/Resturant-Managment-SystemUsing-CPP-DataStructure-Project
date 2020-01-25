@@ -27,3 +27,15 @@ ORD_TYPE Cook::getType() const // get cook type
 {
 	return type;
 }
+int Cook::getSpeed() const {
+	return speed;
+}
+int Cook::getNumOrders() const {
+	return numOrdersSinceBreak;
+}
+void Cook::incNumOrders() {
+	numOrdersSinceBreak++;
+}
+int Cook::getbreakDur() const {
+	return breakDur;
+}

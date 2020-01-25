@@ -29,7 +29,7 @@ void ArrivalEvent::addOrder(Restaurant* pRest, Order* newOrder) { // adds order 
 		pRest->addWaitingGOrder(newOrder); // add it to the waiting normal order list
 	}
 	else if (newOrder->getType() == TYPE_VIP) { // if the executed arrival event is a VIP order
-		pRest->addWaitingVIPOrder(newOrder, calculateVIPPriority(newOrder)); // add it to the waiting VIP order list with its calculated priority
+		pRest->addWaitingVIPOrder(newOrder); // add it to the waiting VIP order list with its calculated priority
 
 	}
 	return;

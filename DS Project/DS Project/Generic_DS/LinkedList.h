@@ -124,7 +124,14 @@ public:
 		}
 		return false;
 	}
-
+	bool ShowFirst(T& frntEntry) {
+		if (Head) {
+			frntEntry = Head->getItem();
+			return true;
+		}
+		else
+		return false;
+	}
 
 	//[5] DeleteLast
 	//Deletes the last node in the list
@@ -151,13 +158,13 @@ public:
 		}
 	}
 
-	bool DeleteNode(Order*& const value, Order*& deletedOrder) {
+	bool DeleteNode(int ID, Order*& deletedOrder) {
+		Order* temp;
 		if (!Head) {
 			return false;
 		}
-
-		if (*value == *(Head->getItem())) {
-			T deletedOrder;
+		temp = Head->getItem();
+		if (ID == temp->getID()) {
 			DeleteFirst(deletedOrder);
 			return true;
 		}
@@ -165,7 +172,8 @@ public:
 		Node<T>* q = p->getNext();
 
 		while (q) {
-			if (*value == *(q->getItem())) {
+			temp = q->getItem();
+			if (ID == temp->getID()) {
 				p->setNext(q->getNext());
 				deletedOrder = q->getItem();
 				count--;

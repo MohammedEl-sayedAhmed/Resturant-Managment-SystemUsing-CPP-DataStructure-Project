@@ -1,4 +1,5 @@
 #include "Order.h"
+#include <iostream>
 
 Order::Order() // default constructor 
 {
@@ -49,15 +50,50 @@ ORD_TYPE Order::getType() const // get order type
 	return type;
 }
 
-void Order::setTotalMoney(double totMoney) { // get order total money 
-	totalMoney = totMoney;
+bool Order::operator ==(Order toCompare) {
+        // compare the IDs of the 2 orders
+	return  (ID == toCompare.getID());
+}
+
+void Order::setTotalMoney(int Money) {
+	totalMoney = Money;
 }
 
 void Order::setType(ORD_TYPE otype) {
 	type = otype;
 }
+void Order::setWaitTime(int t)
+{
+	waitTime=t;
+}
+void Order::setFinishTime(int time)
+{
+	finishTime = time;
+}
+void Order::setServTime(int time)
+{
+	servTime= time;
+}
+void Order::setCook(Cook* c) {
+	itsCook = c;
+}
 
-bool Order::operator ==(Order toCompare) {
-        // compare the IDs of the 2 orders
-	return  (ID == toCompare.getID());
+int Order::getFinishTime()const
+{
+	return finishTime;
+}
+int Order::getWaitTime()const
+{
+	return waitTime;
+}
+int Order::getServTime()const
+{
+	return servTime;
+}
+Cook* Order::getCook() {
+	return itsCook;
+}
+
+void Order::outputInfoLine(ofstream& outputFile) const {
+	outputFile << finishTime << "  " << ID << "  " << arrTime << "  " << waitTime << "  " << servTime << endl;
 }
