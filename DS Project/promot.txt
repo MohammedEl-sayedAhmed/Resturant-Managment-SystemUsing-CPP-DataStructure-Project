@@ -1,0 +1,14 @@
+void Restaurant::promoteOrder(int toPromoteOrderID, int Money) {
+	Order* toPromoteOrder = new Order(toPromoteOrderID);
+	if (waitingNOrders.DeleteNode(toPromoteOrder)) {
+		toPromoteOrder->setTotalMoney(toPromoteOrder->getTotalMoney() + Money);
+		waitingVIPOrders.enqueue(toPromoteOrder, calculateVIPPriority(toPromoteOrder));
+		NWOrders--; // decrementing the number of normal orders in the normal waiting order list
+		NOrders--; // decrementing the number of normal orders in the whole program
+		VWOrders++; // incrementing number of VIP waiting orders in the waiting VIP order list
+		VOrders++; // incrementing number of VIP orders in the whole program
+	}
+	delete toPromoteOrder; // delete the temporarily created order
+	return;
+}
+

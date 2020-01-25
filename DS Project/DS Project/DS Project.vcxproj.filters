@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{37181a74-6fcf-45af-99dc-24bf3caace00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI\GUIDrawable">
+      <UniqueIdentifier>{c6dad345-5a1f-485e-b10e-91cf693d3797}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI\GUIWindows">
+      <UniqueIdentifier>{9068afea-49aa-4417-8b39-d690e95f1ef5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generic_DS">
+      <UniqueIdentifier>{e630d0b7-6dc8-4d77-b6cf-f67ff8b065fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events">
+      <UniqueIdentifier>{025aefb7-62cf-4a2e-b80b-19cb2dd1eb83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rest">
+      <UniqueIdentifier>{338309ff-af32-4b42-9db0-d43ce33eb4a2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="GUI\GUI.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\GUIDrawables\VIPGUIElement.cpp">
+      <Filter>GUI\GUIDrawable</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\GUIDrawables\GUIDrawable.cpp">
+      <Filter>GUI\GUIDrawable</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\GUIWindows\MainScreen.cpp">
+      <Filter>GUI\GUIWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\GUIWindows\StartingScreen.cpp">
+      <Filter>GUI\GUIWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\GUIWindows\TextArea.cpp">
+      <Filter>GUI\GUIWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Events\ArrivalEvent.cpp">
+      <Filter>Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Events\Event.cpp">
+      <Filter>Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Rest\Order.cpp">
+      <Filter>Rest</Filter>
+    </ClCompile>
+    <ClCompile Include="Rest\Restaurant.cpp">
+      <Filter>Rest</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\GUIDrawables\NormalGUIElement.cpp" />
+    <ClCompile Include="GUI\GUIDrawables\VeganGUIElement.cpp" />
+    <ClCompile Include="Rest\Cook.cpp">
+      <Filter>Rest</Filter>
+    </ClCompile>
+    <ClCompile Include="Events\CancelEvent.cpp" />
+    <ClCompile Include="Events\PromoteEvent.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Defs.h" />
+    <ClInclude Include="GUI\GUIDefs.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\GUI.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\GUIDrawables\GUIDrawable.h">
+      <Filter>GUI\GUIDrawable</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\GUIWindows\StartingScreen.h">
+      <Filter>GUI\GUIWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Generic_DS\Queue.h">
+      <Filter>Generic_DS</Filter>
+    </ClInclude>
+    <ClInclude Include="Generic_DS\Node.h">
+      <Filter>Generic_DS</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\ArrivalEvent.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\Event.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Rest\Order.h">
+      <Filter>Rest</Filter>
+    </ClInclude>
+    <ClInclude Include="Rest\Restaurant.h">
+      <Filter>Rest</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\GUIDrawables\VIPGUIElement.h">
+      <Filter>GUI\GUIDrawable</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\GUIWindows\MainScreen.h">
+      <Filter>GUI\GUIWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\GUIDrawables\NormalGUIElement.h" />
+    <ClInclude Include="GUI\GUIDrawables\VeganGUIElement.h" />
+    <ClInclude Include="Rest\Cook.h">
+      <Filter>Rest</Filter>
+    </ClInclude>
+    <ClInclude Include="Generic_DS\PQNode.h" />
+    <ClInclude Include="Generic_DS\PQueueADT.h" />
+    <ClInclude Include="Generic_DS\QueueADT.h" />
+    <ClInclude Include="Generic_DS\LinkedList.h" />
+    <ClInclude Include="Generic_DS\LinkedQueue.h" />
+    <ClInclude Include="Generic_DS\LinkedPQueue.h" />
+    <ClInclude Include="Events\CancelEvent.h" />
+    <ClInclude Include="Events\PromoteEvent.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\logo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="try.txt" />
+  </ItemGroup>
+</Project>
